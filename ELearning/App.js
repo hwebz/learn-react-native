@@ -1,8 +1,10 @@
 import { useFonts, Outfit_400Regular, Outfit_700Bold } from '@expo-google-fonts/outfit'
-import { StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import LoginScreen from './App/Screens/LoginScreen'
 import Constants from "expo-constants"
-import { ClerkProvider } from '@clerk/clerk-expo'
+import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-expo'
+import { NavigationContainer } from '@react-navigation/native'
+import TabNavigation from './App/Navigations/TabNavigation'
 
 export default function App() {
   const [fontsLoaded, fontsError] = useFonts({
@@ -20,9 +22,17 @@ export default function App() {
 
   return (
     <ClerkProvider publishableKey={Constants.expoConfig.extra.clerkPublishableKey}>
-      <View style={styles.container}>
-        <LoginScreen />
-      </View>
+        <SignedIn>
+          <NavigationContainer>
+            <TabNavigation />
+          </NavigationContainer>
+        </SignedIn>
+        
+        <SignedOut>
+          <View style={styles.container}>
+            <LoginScreen />
+          </View>
+        </SignedOut>
     </ClerkProvider>
   );
 }

@@ -1,12 +1,38 @@
 import { View, Text, Image, Touchable, TouchableOpacity } from 'react-native'
 import React from 'react'
+import * as WebBrowser from "expo-web-browser"
 
+import { useWarmUpBrowser } from './../../hooks/warmUpBrowser'
 import Colors from '../Utils/Colors'
 
 import appThumbnail from './../../assets/images/app.jpg'
 import googleIcon from './../../assets/images/google.png'
+import { useOAuth } from '@clerk/clerk-expo'
+
+WebBrowser.maybeCompleteAuthSession()
 
 export default function LoginScreen() {
+// Warm up the android browser to improve UX
+  // https://docs.expo.dev/guides/authentication/#improving-user-experience
+  useWarmUpBrowser()
+ 
+  const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+ 
+  const onPress = React.useCallback(async () => {
+    try {
+      const { createdSessionId, signIn, signUp, setActive } =
+        await startOAuthFlow();
+ 
+      if (createdSessionId) {
+        setActive({ session: createdSessionId });
+      } else {
+        // Use signIn or signUp for next steps such as MFA
+      }
+    } catch (err) {
+      console.error("OAuth error", err);
+    }
+  }, []);
+
   return (
     <View style={{
         display: 'flex',
@@ -53,17 +79,20 @@ export default function LoginScreen() {
         }}>
             Your Ultimate Programming Learning Box
         </Text>
-        <TouchableOpacity style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 10,
-            backgroundColor: Colors.WHITE,
-            borderRadius: 50,
-            padding: 10,
-            paddingRight: 20,
-            alignSelf: 'center'
-        }}>
+        <TouchableOpacity
+            onPress={onPress}
+            style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 10,
+                backgroundColor: Colors.WHITE,
+                borderRadius: 50,
+                padding: 10,
+                paddingRight: 20,
+                alignSelf: 'center'
+            }}
+        >
             <Image source={googleIcon} style={{}} />
             <Text style={{
                 fontSize: 23,
