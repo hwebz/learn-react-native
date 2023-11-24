@@ -1,4 +1,4 @@
-import { useFonts, Outfit_400Regular, Outfit_700Bold } from '@expo-google-fonts/outfit'
+import { useFonts, Outfit_400Regular, Outfit_500Medium, Outfit_700Bold } from '@expo-google-fonts/outfit'
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import LoginScreen from './App/Screens/LoginScreen'
 import Constants from "expo-constants"
@@ -9,6 +9,7 @@ import TabNavigation from './App/Navigations/TabNavigation'
 export default function App() {
   const [fontsLoaded, fontsError] = useFonts({
     'OutfitRegular': Outfit_400Regular,
+    'OutfitMedium': Outfit_500Medium,
     'OutfitBold': Outfit_700Bold
   })
 
