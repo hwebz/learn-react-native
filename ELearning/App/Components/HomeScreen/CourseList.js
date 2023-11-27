@@ -1,13 +1,16 @@
-import { View, Text, FlatList } from 'react-native'
+import { View, Text, FlatList, Touchable, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { getCourseList } from '../../Services'
 import Colors from '../../Utils/Colors'
 import Course from './Course'
+import { useNavigation } from '@react-navigation/native'
 
 export default function CourseList({
   level,
   color
 }) {
+  const navigation = useNavigation()
+
   const [courses, setCourses] = useState([])
 
   useEffect(() => {
@@ -37,7 +40,13 @@ export default function CourseList({
         key={courses.id}
         horizontal={true}
         renderItem={({ item }) => (
-          <Course course={item} />
+          <TouchableOpacity onPress={() => {
+            navigation.navigate('CourseDetail', {
+              course: item
+            })
+          }}>
+            <Course course={item} />
+          </TouchableOpacity>
         )}
       />
     </View>

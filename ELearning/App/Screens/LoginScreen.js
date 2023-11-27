@@ -97,6 +97,7 @@ export default function LoginScreen() {
             <Text style={{
                 fontSize: 23,
                 color: Colors.PRIMARY,
+                lineHeight: 36,
                 fontFamily: 'OutfitRegular'
             }}>
             Login with Google
