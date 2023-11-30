@@ -16,6 +16,7 @@ export const getCourseList = async (level = 'Basic') => {
                 time
                 description {
                     markdown
+                    html
                 }
                 author
                 banner {
@@ -28,9 +29,11 @@ export const getCourseList = async (level = 'Basic') => {
                         heading
                         description {
                             markdown
+                            html
                         }
                         output {
                             markdown
+                            html
                         }
                     }
                 }
