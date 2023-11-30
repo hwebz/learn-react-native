@@ -64,3 +64,21 @@ export const enrollCourse = async (courseId, userEmail) => {
     const data = await request(MASTER_URL, mutationQuery)
     return data?.courses || []
 }
+
+export const getUserEnrolledCourses = async (courseId, userEmail) => {
+  console.log(courseId, userEmail)
+  const query = gql`
+    query GetUserEnrolledCourses {
+      userEnrolledCourses(where: { courseId: "${courseId}", userEmail: "${userEmail}" }) {
+        id
+        courseId
+        completedChapters {
+          chapterId
+        }
+      }
+    }
+  `
+  console.log(query)
+  const data = await request(MASTER_URL, query)
+  return data?.userEnrolledCourses || []
+}

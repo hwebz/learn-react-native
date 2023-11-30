@@ -6,8 +6,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 
 export default function DetailSection({
     course,
-    enrollCourse
+    enrollCourse,
+    enrolledCourses
 }) {
+  console.log(enrolledCourses)
   return (
     <View style={{
         padding: 10,
@@ -71,7 +73,8 @@ export default function DetailSection({
         </View>
 
         <View style={styles.rowStyle}>
-            <TouchableOpacity>
+            {!enrolledCourses.length && (
+              <TouchableOpacity>
                 <Text style={{
                     padding: 15,
                     backgroundColor: Colors.PRIMARY,
@@ -81,6 +84,7 @@ export default function DetailSection({
                     fontFamily: 'OutfitRegular'
                 }} onPress={enrollCourse}>Enroll For Free</Text>
             </TouchableOpacity>
+            )}
             <View style={{
                 flex: 1
             }}>
