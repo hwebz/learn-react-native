@@ -22,7 +22,7 @@ export default function ContentItem({
       />
 
       {output != null && (
-        <TouchableOpacity style={{ marginTop: -20 }} onPress={() => setIsRan(true)}>
+        <TouchableOpacity onPress={() => setIsRan(true)}>
           <Text style={{
             backgroundColor: Colors.PRIMARY,
             borderRadius: 10,

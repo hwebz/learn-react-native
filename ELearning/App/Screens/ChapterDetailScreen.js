@@ -4,6 +4,7 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import Content from '../Components/ChapterDetail/Content'
 import { getUserEnrolledCourses, markChapterAsCompleted } from '../Services'
 import { CompletedChapterContext } from '../Context/CompletedChapterContext'
+import { ScrollView } from 'react-native-gesture-handler'
 
 export default function ChapterDetailScreen() {
   const { params } = useRoute()
