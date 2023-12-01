@@ -19,17 +19,17 @@ export default function CourseDetailScreen() {
   const [enrolledCourses, setEnrolledCourses] = React.useState([])
 
   useEffect(() => {
-    console.log(params.course)
-    if (!params.course) {
+    console.log(params?.course)
+    if (!params?.course) {
       navigator.navigate('Home')
     }
-  }, [params.course])
+  }, [params?.course])
 
   useEffect(() => {
-    if (params.course && user) {
+    if (params?.course && user) {
       getUserEnrolledCourses()
     }
-  }, [params.course, user])
+  }, [params?.course, user])
 
   useEffect(() => {
     if (isChapterCompleted) {
@@ -64,16 +64,16 @@ export default function CourseDetailScreen() {
       }}>
         <StatusBar style="dark" />
         <TouchableOpacity onPress={() => {
-            navigator.navigate('Home')
+            navigator.goBack()
           }}>
           <Ionicons name="ios-arrow-back-circle" size={40} color="black" />
         </TouchableOpacity>
         <DetailSection
-          course={params.course}
+          course={params?.course}
           enrollCourse={userEnrollCourse}
           enrolledCourses={enrolledCourses}
         />
-        <ChapterSection chapters={params.course?.chapters} enrolledCourses={enrolledCourses} />
+        <ChapterSection chapters={params?.course?.chapters} enrolledCourses={enrolledCourses} />
       </View>
     </ScrollView>
   )

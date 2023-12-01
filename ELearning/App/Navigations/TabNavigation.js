@@ -1,12 +1,11 @@
-import { View, Text } from 'react-native'
 import React, { useState } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import LeaderBoard from '../Screens/LeaderBoard'
-import MyCourse from '../Screens/MyCourse'
 import ProfileScreen from '../Screens/ProfileScreen'
-import { Ionicons, FontAwesome5, MaterialIcons } from '@expo/vector-icons'
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons'
 import HomeScreenNavigation from './HomeScreenNavigation'
 import { UserPointsContext } from '../Context/UserPointsContext'
+import MyCourseScreenNavigation from './MyCourseScreenNavigation'
 
 const Tab =  createBottomTabNavigator()
 
@@ -29,7 +28,7 @@ export default function TabNavigation() {
             tabBarIcon: ({ color, size }) => (
               <FontAwesome5 name="book-open" size={size} color={color} />
             )
-          }} component={MyCourse} />
+          }} component={MyCourseScreenNavigation} />
           <Tab.Screen name="LeaderBoard" options={{
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="md-stats-chart" size={size} color={color} />
