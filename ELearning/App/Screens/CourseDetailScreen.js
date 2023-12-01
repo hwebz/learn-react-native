@@ -1,5 +1,5 @@
 import { View, Text, ToastAndroid } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { StatusBar } from 'expo-status-bar'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -8,11 +8,13 @@ import DetailSection from '../Components/CourseDetailScreen/DetailSection'
 import ChapterSection from '../Components/CourseDetailScreen/ChapterSection'
 import { enrollCourse, getUserEnrolledCourses as getUserEnrolledCoursesAsync } from '../Services'
 import { useUser } from '@clerk/clerk-expo'
+import { CompletedChapterContext } from '../Context/CompletedChapterContext'
 
 export default function CourseDetailScreen() {
   const navigator = useNavigation()
   const { params } = useRoute()
   const { user } = useUser()
+  const { isChapterCompleted } = useContext(CompletedChapterContext)
 
   const [enrolledCourses, setEnrolledCourses] = React.useState([])
 
@@ -28,6 +30,12 @@ export default function CourseDetailScreen() {
       getUserEnrolledCourses()
     }
   }, [params.course, user])
+
+  useEffect(() => {
+    if (isChapterCompleted) {
+      getUserEnrolledCourses()
+    }
+  }, [isChapterCompleted])
 
   const userEnrollCourse = async () => {
     try {

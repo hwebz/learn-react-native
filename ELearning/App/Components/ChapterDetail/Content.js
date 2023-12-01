@@ -7,7 +7,8 @@ import Colors from '../../Utils/Colors'
 import { useNavigation } from '@react-navigation/native'
 
 export default function Content({
-  content
+  content,
+  onChapterFinish
 }) {
   const navigation = useNavigation()
   let contentRef
@@ -16,7 +17,8 @@ export default function Content({
   const onNextPress = () => {
     const newIndex = contentIndex + 1
     if (content.length - 1 < newIndex) {
-      navigation.goBack()
+      onChapterFinish()
+      // navigation.goBack()
       return
     }
     setContentIndex(newIndex)

@@ -23,17 +23,17 @@ export default function App() {
 
   return (
     <ClerkProvider publishableKey={Constants.expoConfig.extra.clerkPublishableKey}>
-        <SignedIn>
-          <NavigationContainer>
-            <TabNavigation />
-          </NavigationContainer>
-        </SignedIn>
-        
-        <SignedOut>
-          <View style={styles.container}>
-            <LoginScreen />
-          </View>
-        </SignedOut>
+      <SignedIn>
+        <NavigationContainer>
+          <TabNavigation />
+        </NavigationContainer>
+      </SignedIn>
+      
+      <SignedOut>
+        <View style={styles.container}>
+          <LoginScreen />
+        </View>
+      </SignedOut>
     </ClerkProvider>
   );
 }

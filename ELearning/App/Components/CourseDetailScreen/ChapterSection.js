@@ -1,23 +1,37 @@
 import { View, Text, ToastAndroid, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import Colors from '../../Utils/Colors'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
+import { CompletedChapterContext } from '../../Context/CompletedChapterContext'
 
 export default function ChapterSection({
     chapters = [],
     enrolledCourses
 }) {
   const navigation = useNavigation()
+  const { setIsChapterCompleted } = useContext(CompletedChapterContext)
 
-  const onChapterPress = (content) => {
+  const onChapterPress = (chapter) => {
+    setIsChapterCompleted(false)
     if (!enrolledCourses.length) {
       ToastAndroid.show("Please enroll the course first", ToastAndroid.SHORT)
     } else {
       navigation.navigate('ChapterDetail', {
-        content
+        content: chapter.content,
+        chapterId: chapter.id,
+        userCourseRecordId: enrolledCourses[0]?.id,
       })
     }
+  }
+
+  const checkIfChapterIsCompleted = (chapterId) => {
+    const { completedChapters = [] } = enrolledCourses[0] || {}
+    if (!completedChapters?.length) {
+      return false
+    }
+    const selectedChapterId = completedChapters.find(item => item.chapterId === chapterId)
+    return !!selectedChapterId
   }
 
   return (
@@ -33,12 +47,12 @@ export default function ChapterSection({
         marginBottom: 10
       }}>Chapters</Text>
       {chapters.map((chapter, index) => {
-        const isDisabled = index == 2
-        const isCompleted = index == 0
+        const isDisabled = index == 3
+        const isCompleted = checkIfChapterIsCompleted(chapter.id)
         const selectedColor = isDisabled ? Colors.GREY : (isCompleted ? Colors.GREEN : Colors.PRIMARY)
         const selectedIcon = isDisabled ? 'lock-closed' : 'ios-play-circle-sharp'
         return (
-          <TouchableOpacity key={chapter.id} onPress={() => onChapterPress(chapter.content)}>
+          <TouchableOpacity disabled={isDisabled || isCompleted} key={chapter.id} onPress={() => onChapterPress(chapter)}>
             <View style={{
               display: 'flex',
               flexDirection: 'row',
