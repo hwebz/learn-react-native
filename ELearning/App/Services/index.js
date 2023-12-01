@@ -184,3 +184,50 @@ export const getAllUsers = async () => {
     // result = {"userDetails":[...]}
     return result?.userDetails
 }
+
+export const getAllProgressCourses = async (userEmail) => {
+    const query = gql`
+        query GetAllProgressCourses {
+            userEnrolledCourses(where: { userEmail: "${userEmail}" }) {
+                completedChapters {
+                    chapterId
+                }
+                course {
+                    id
+                    name
+                    price
+                    level
+                    tags
+                    time
+                    description {
+                        markdown
+                        html
+                    }
+                    author
+                    banner {
+                        url
+                    }
+                    chapters {
+                        id
+                        title
+                        content {
+                            heading
+                            description {
+                                markdown
+                                html
+                            }
+                            output {
+                                markdown
+                                html
+                            }
+                        }
+                    }
+                }
+            }
+        }      
+    `
+    console.log(query)
+    const result = await request(MASTER_URL, query)
+    // result = {"userDetails":[...]}
+    return result?.userEnrolledCourses
+}

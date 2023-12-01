@@ -1,19 +1,22 @@
 import { View, Text, FlatList, ScrollView } from 'react-native'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../Components/HomeScreen/Header'
 import Colors from '../Utils/Colors'
 import CourseList from '../Components/HomeScreen/CourseList'
 import { useUser } from '@clerk/clerk-expo'
-import { createNewUser, getUserDetail } from '../Services'
+import { createNewUser, getAllProgressCourses, getUserDetail } from '../Services'
 import { UserPointsContext } from '../Context/UserPointsContext'
+import CourseProgress from '../Components/CourseProgress'
 
 export default function HomeScreen() {
   const { user } = useUser()
   const { setUserPoints } = useContext(UserPointsContext)
+  const [progressCourses, setProgressCourses] = useState([])
 
   useEffect(() => {
     if (user) {
       createUser()
+      getProgressCourses()
     }
   }, [user])
 
@@ -43,6 +46,15 @@ export default function HomeScreen() {
     }
   }
 
+  const getProgressCourses = async () => {
+    try {
+      const courses = await getAllProgressCourses(user.primaryEmailAddress.emailAddress)
+      setProgressCourses(courses)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <ScrollView>
       <View style={{
@@ -58,7 +70,8 @@ export default function HomeScreen() {
           marginTop: -80,
           marginBottom: 30
         }}>
-          <CourseList level='Basic' color={Colors.WHITE} />
+          <CourseProgress progressCourses={progressCourses} />
+          <CourseList level='Basic' color={progressCourses.length > 0 ? Colors.BLACK : Colors.WHITE} />
         </View>
         <View style={{
           marginBottom: 30

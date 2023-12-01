@@ -2,9 +2,11 @@ import { View, Text, Image } from 'react-native'
 import React from 'react'
 import Colors from '../../Utils/Colors'
 import { Feather } from '@expo/vector-icons'
+import CourseProgressBar from './CourseProgressBar'
 
 export default function Course({
-    course
+    course,
+    completedChapters = []
 }) {
   return (
     <View style={{
@@ -71,6 +73,12 @@ export default function Course({
           fontFamily: 'OutfitMedium',
         }}>{course?.price > 0 ? `$${course?.price}` : 'Free'}</Text>
       </View>
+      {completedChapters?.length > 0 && (
+        <CourseProgressBar
+          totalChapters={course.chapters.length}
+          completedChapters={completedChapters.length}
+        />
+      )}
     </View>
   )
 }

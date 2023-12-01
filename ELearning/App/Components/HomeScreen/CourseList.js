@@ -30,7 +30,7 @@ export default function CourseList({
         marginBottom: 15,
         marginLeft: 20,
         marginRight: 20,
-      }}>Basic Course</Text>
+      }}>{level} Courses</Text>
 
       <FlatList
         style={{
