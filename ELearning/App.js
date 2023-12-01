@@ -5,6 +5,7 @@ import Constants from "expo-constants"
 import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-expo'
 import { NavigationContainer } from '@react-navigation/native'
 import TabNavigation from './App/Navigations/TabNavigation'
+import { UserPointsContext } from './App/Context/UserPointsContext'
 
 export default function App() {
   const [fontsLoaded, fontsError] = useFonts({

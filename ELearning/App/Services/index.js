@@ -86,7 +86,7 @@ export const getUserEnrolledCourses = async (courseId, userEmail) => {
   return data?.userEnrolledCourses || []
 }
 
-export const markChapterAsCompleted = async (recordId, chapterId) => {
+export const markChapterAsCompleted = async (recordId, chapterId, userEmail, points) => {
     const mutationQuery = gql`
         mutation markChapterCompleted {
             updateUserEnrolledCourse(
@@ -102,10 +102,85 @@ export const markChapterAsCompleted = async (recordId, chapterId) => {
                     }
                 }
             }
+
+            updateUserDetail(
+                where: { email: "${userEmail}" },
+                data: { point: ${points}}
+            ) {
+                point
+            }
+
+            publishUserDetail(where: { email: "${userEmail}" }) {
+                id
+            }
         }
     `
 
     console.log(mutationQuery)
     const data = await request(MASTER_URL, mutationQuery)
     return data
+}
+
+export const createNewUser = async (userName, email, profileImageUrl) => {
+    const mutationQuery = gql`
+        mutation CreateUser {
+            upsertUserDetail(
+                upsert: {
+                    create: {
+                        email: "${email}",
+                        point: 10,
+                        profileImage: "${profileImageUrl}",
+                        userName: "${userName}"
+                    },
+                    update: {
+                        email: "${email}",
+                        profileImage: "${profileImageUrl}",
+                        userName: "${userName}"
+                    }
+                }
+                where: {email: "${email}"}
+            ) {
+                id
+                point
+            }
+            publishUserDetail(where: {email: "${email}"}) {
+                id
+            }
+        }
+    `
+    console.log(mutationQuery)
+    const result = await request(MASTER_URL, mutationQuery)
+    // result = {"publishUserDetail": {"id": "clpmczdaqbt230bzvdfmx1gao"}, "upsertUserDetail": {"id": "clpmczdaqbt230bzvdfmx1gao", "point": 10}}
+    return result?.upsertUserDetail?.point
+}
+
+export const getUserDetail = async (email) => {
+    const query = gql`
+        query GetUserDetail {
+            userDetail(where: {email: "${email}"}) {
+                point
+            }
+        }
+    `
+    console.log(query)
+    const result = await request(MASTER_URL, query)
+    // result = {"userDetail": {"point": 10}}
+    return result?.userDetail?.point
+}
+
+export const getAllUsers = async () => {
+    const query = gql`
+        query GetAllUsers {
+            userDetails(orderBy: point_DESC) {
+                id
+                profileImage
+                userName
+                point
+            }
+        }      
+    `
+    console.log(query)
+    const result = await request(MASTER_URL, query)
+    // result = {"userDetails":[...]}
+    return result?.userDetails
 }

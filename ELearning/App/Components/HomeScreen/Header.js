@@ -1,11 +1,12 @@
 import { View, Text, Image, StyleSheet, TextInput } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { useUser } from '@clerk/clerk-expo'
 import { Ionicons } from '@expo/vector-icons'
 
 import Colors from '../../Utils/Colors'
 import coinIcon from './../../../assets/images/coin.png'
 import { StatusBar } from 'expo-status-bar'
+import { UserPointsContext } from '../../Context/UserPointsContext'
 
 export default function Header() {
   const {
@@ -13,6 +14,7 @@ export default function Header() {
     isSignedIn,
     user
   } = useUser()
+  const { userPoints } = useContext(UserPointsContext)
   
   return isLoaded && (
     <View>
@@ -42,7 +44,7 @@ export default function Header() {
               width: 40,
               height: 40
             }} />
-            <Text style={styles.mainText}>3500</Text>
+            <Text style={styles.mainText}>{userPoints}</Text>
         </View>
       </View>
 
