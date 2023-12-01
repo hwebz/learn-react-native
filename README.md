@@ -14,7 +14,7 @@
 
 ## App List
 
-### Elearning (Hygraph + Google Sign In)
+### Elearning (Hygraph + Clerk)
 Video tutorial: [TubeGuriji](https://www.youtube.com/watch?v=zMMcxWORZvg)
 
 > /ELearning
