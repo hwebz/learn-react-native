@@ -5,7 +5,7 @@ const ScreenWrapper = ({children}: any) => {
   let statusBarHeight = StatusBar.currentHeight
     ? StatusBar.currentHeight
     : Platform.OS === 'ios'
-    ? 30
+    ? 45
     : 0;
 
   if (Platform.OS === 'ios') {

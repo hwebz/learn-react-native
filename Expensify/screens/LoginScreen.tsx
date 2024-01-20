@@ -1,12 +1,16 @@
 import {Text, View} from 'react-native';
 import React, {Component} from 'react';
+import ScreenWrapper from '../components/screenWrapper';
+import {colors} from '../theme';
 
 export class LoginScreen extends Component {
   render() {
     return (
-      <View className="mt-10">
-        <Text>LoginScreen</Text>
-      </View>
+      <ScreenWrapper className="flex-1">
+        <View>
+          <Text className={`${colors.heading}`}>LoginScreen</Text>
+        </View>
+      </ScreenWrapper>
     );
   }
 }
