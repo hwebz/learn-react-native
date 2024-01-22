@@ -82,6 +82,7 @@ const SignInScreen = () => {
             onChangeText={value => setPassword(value)}
             className="p-4 bg-white rounded-full mb-3"
             autoCapitalize="none"
+            secureTextEntry={true}
           />
           <TouchableOpacity className="flex-row justify-end mt-2">
             <Text className="text-blue-500">Forget Password?</Text>

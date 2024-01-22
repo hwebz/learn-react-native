@@ -104,6 +104,7 @@ const SignUpScreen = () => {
               onChangeText={value => setPassword(value)}
               className="p-4 bg-white rounded-full mb-3"
               autoCapitalize="none"
+              secureTextEntry={true}
             />
             <Text className={`${colors.heading} text-lg font-bold mb-2`}>
               Confirm Your Password
@@ -114,6 +115,7 @@ const SignUpScreen = () => {
               onChangeText={value => setConfirmPassword(value)}
               className="p-4 bg-white rounded-full mb-3"
               autoCapitalize="none"
+              secureTextEntry={true}
             />
           </View>
         </ScrollView>

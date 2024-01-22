@@ -15,7 +15,8 @@ const images = {
     expenseBanner: require('./expenseBanner.png'),
     welcome: require('./welcome.gif'),
     login: require('./login.png'),
-    signup: require('./signup.png')
+    signup: require('./signup.png'),
+    googleIcon: require('./googleIcon.png'),
 }
 
 export default function randomImage(){
