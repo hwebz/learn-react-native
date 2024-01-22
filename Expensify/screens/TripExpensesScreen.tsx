@@ -1,37 +1,64 @@
 import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import ScreenWrapper from '../components/screenWrapper';
 import {colors} from '../theme';
 import {getImage} from '../assets/images/randomImage';
 import EmptyList from '../components/emptyList';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import BackButton from '../components/backButton';
 import ExpenseCard from '../components/ExpenseCard';
+import {getDocs, query, where} from 'firebase/firestore';
+import {expensesRef} from '../config/firebase';
 
-const items = [
-  {
-    id: 1,
-    title: 'ate sandwich',
-    amount: 4,
-    category: 'food',
-  },
-  {
-    id: 2,
-    title: 'bought a jacket',
-    amount: 50,
-    category: 'shopping',
-  },
-  {
-    id: 3,
-    title: 'watched a movie',
-    amount: 100,
-    category: 'entertainment',
-  },
-];
+// const expenses = [
+//   {
+//     id: 1,
+//     title: 'ate sandwich',
+//     amount: 4,
+//     category: 'food',
+//   },
+//   {
+//     id: 2,
+//     title: 'bought a jacket',
+//     amount: 50,
+//     category: 'shopping',
+//   },
+//   {
+//     id: 3,
+//     title: 'watched a movie',
+//     amount: 100,
+//     category: 'entertainment',
+//   },
+// ];
 
 const TripExpensesScreen = (props: any) => {
   const navigation = useNavigation();
   const {id, place, country} = props.route.params;
+
+  const [expenses, setExpenses] = useState<any[]>([]);
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchExpenses();
+    }
+  }, [isFocused]);
+
+  const fetchExpenses = async () => {
+    const q = query(expensesRef, where('tripId', '==', id));
+    const querySnapshot = await getDocs(q);
+    const data: any[] = [];
+    querySnapshot.forEach(doc => {
+      console.log('doc = ', doc.data());
+      data.push({
+        ...doc.data(),
+        id: doc.id,
+      });
+    });
+
+    setExpenses(data);
+  };
 
   return (
     <ScreenWrapper className="flex-1">
@@ -58,7 +85,9 @@ const TripExpensesScreen = (props: any) => {
               Expenses
             </Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate('AddExpense' as never)}
+              onPress={() =>
+                navigation.navigate('AddExpense', {id, place, country})
+              }
               className="p-2 px-3 bg-white border border-gray-200 rounded-full">
               <Text className={colors.heading}>Add Expense</Text>
             </TouchableOpacity>
@@ -68,7 +97,7 @@ const TripExpensesScreen = (props: any) => {
               height: 430,
             }}>
             <FlatList
-              data={items}
+              data={expenses}
               keyExtractor={item => item.id.toString()}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={

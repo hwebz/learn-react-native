@@ -13,18 +13,48 @@ import BackButton from '../components/backButton';
 import {getImage} from '../assets/images/randomImage';
 import {useNavigation} from '@react-navigation/native';
 import {Category, categories} from '../constants';
+import Snackbar from 'react-native-snackbar';
+import {addDoc} from 'firebase/firestore';
+import {expensesRef} from '../config/firebase';
+import Loading from '../components/loading';
 
-const AddExpenseScreen = () => {
+const AddExpenseScreen = (props: any) => {
+  const {id} = props.route.params;
   const navigation = useNavigation();
 
   const [title, setTitle] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
   const [category, setCategory] = useState<string>('food');
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleAddExpense = () => {
+  const handleAddExpense = async () => {
     if (title && amount && category) {
-      navigation.goBack();
+      // navigation.goBack();
+      try {
+        setLoading(true);
+        let doc = await addDoc(expensesRef, {
+          title,
+          amount,
+          category,
+          tripId: id,
+        });
+        if (doc && doc.id) {
+          navigation.goBack();
+        }
+      } catch (error: any) {
+        console.log('error', error);
+        Snackbar.show({
+          text: 'Something went wrong! Please try again to add expense.',
+          backgroundColor: 'red',
+        });
+      } finally {
+        setLoading(false);
+      }
     } else {
+      Snackbar.show({
+        text: 'Please fill all the fields',
+        backgroundColor: 'red',
+      });
     }
   };
 
@@ -79,13 +109,17 @@ const AddExpenseScreen = () => {
         </View>
 
         <View>
-          <TouchableOpacity
-            onPress={handleAddExpense}
-            className={`bg-[${colors.button}] my-6 rounded-full p-3 shadow-sm`}>
-            <Text className="text-center text-white text-lg font-bold">
-              Add Expense
-            </Text>
-          </TouchableOpacity>
+          {loading ? (
+            <Loading />
+          ) : (
+            <TouchableOpacity
+              onPress={handleAddExpense}
+              className={`bg-[${colors.button}] my-6 rounded-full p-3 shadow-sm`}>
+              <Text className="text-center text-white text-lg font-bold">
+                Add Expense
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </ScreenWrapper>

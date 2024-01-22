@@ -5,6 +5,12 @@ import {colors} from '../theme';
 import BackButton from '../components/backButton';
 import {getImage} from '../assets/images/randomImage';
 import {useNavigation} from '@react-navigation/native';
+import Snackbar from 'react-native-snackbar';
+import {auth} from '../config/firebase';
+import {signInWithEmailAndPassword} from 'firebase/auth';
+import {useDispatch, useSelector} from 'react-redux';
+import Loading from '../components/loading';
+import { setUserLoading } from '../redux/slices/user';
 
 const SignInScreen = () => {
   const navigation = useNavigation();
@@ -12,11 +18,32 @@ const SignInScreen = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const handleSignIn = () => {
+  const {userLoading} = useSelector((state: any) => state.user);
+
+  const dispatch = useDispatch();
+
+  const handleSignIn = async () => {
     if (email && password) {
-      navigation.goBack();
-      navigation.navigate('Home' as never);
+      // navigation.goBack();
+      // navigation.navigate('Home' as never);
+
+      try {
+        dispatch(setUserLoading(true));
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error: any) {
+        console.log('error', error);
+        Snackbar.show({
+          text: 'Please provide valid email/password!',
+          backgroundColor: 'red',
+        });
+      } finally {
+        dispatch(setUserLoading(false));
+      }
     } else {
+      Snackbar.show({
+        text: 'Email and Password are required!',
+        backgroundColor: 'red',
+      });
     }
   };
 
@@ -44,6 +71,7 @@ const SignInScreen = () => {
             placeholder="Enter your email"
             onChangeText={value => setEmail(value)}
             className="p-4 bg-white rounded-full mb-3"
+            autoCapitalize="none"
           />
           <Text className={`${colors.heading} text-lg font-bold mb-2`}>
             Password
@@ -53,6 +81,7 @@ const SignInScreen = () => {
             placeholder="Enter your password"
             onChangeText={value => setPassword(value)}
             className="p-4 bg-white rounded-full mb-3"
+            autoCapitalize="none"
           />
           <TouchableOpacity className="flex-row justify-end mt-2">
             <Text className="text-blue-500">Forget Password?</Text>
@@ -60,13 +89,17 @@ const SignInScreen = () => {
         </View>
 
         <View>
-          <TouchableOpacity
-            onPress={handleSignIn}
-            className={`bg-[${colors.button}] my-6 rounded-full p-3 shadow-sm`}>
-            <Text className="text-center text-white text-lg font-bold">
-              Sign In
-            </Text>
-          </TouchableOpacity>
+          {userLoading ? (
+            <Loading />
+          ) : (
+            <TouchableOpacity
+              onPress={handleSignIn}
+              className={`bg-[${colors.button}] my-6 rounded-full p-3 shadow-sm`}>
+              <Text className="text-center text-white text-lg font-bold">
+                Sign In
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </ScreenWrapper>

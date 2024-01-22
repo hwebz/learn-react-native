@@ -1,27 +1,48 @@
-import {
-  View,
-  Text,
-  Image,
-  TextInput,
-  Touchable,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import ScreenWrapper from '../components/screenWrapper';
 import {colors} from '../theme';
 import BackButton from '../components/backButton';
 import {getImage} from '../assets/images/randomImage';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
+import Snackbar from 'react-native-snackbar';
+import {addDoc} from 'firebase/firestore';
+import {tripsRef} from '../config/firebase';
+import Loading from '../components/loading';
 
 const AddTripScreen = () => {
   const navigation = useNavigation();
 
   const [place, setPlace] = useState<string>('');
   const [country, setCountry] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleAddTrip = () => {
+  const {user} = useSelector((state: any) => state.user);
+
+  const handleAddTrip = async () => {
     if (place && country) {
-      navigation.navigate('Home' as never);
+      // navigation.navigate('Home' as never);
+
+      try {
+        setLoading(true);
+        let doc = await addDoc(tripsRef, {
+          place,
+          country,
+          userId: user.uid,
+        });
+        if (doc && doc.id) {
+          navigation.goBack();
+        }
+      } catch (error: any) {
+        console.log('error', error);
+        Snackbar.show({
+          text: 'Something went wrong! Please try again to add trip.',
+          backgroundColor: 'red',
+        });
+      } finally {
+        setLoading(false);
+      }
     } else {
     }
   };
@@ -61,13 +82,17 @@ const AddTripScreen = () => {
         </View>
 
         <View>
-          <TouchableOpacity
-            onPress={handleAddTrip}
-            className={`bg-[${colors.button}] my-6 rounded-full p-3 shadow-sm`}>
-            <Text className="text-center text-white text-lg font-bold">
-              Add Trip
-            </Text>
-          </TouchableOpacity>
+          {loading ? (
+            <Loading />
+          ) : (
+            <TouchableOpacity
+              onPress={handleAddTrip}
+              className={`bg-[${colors.button}] my-6 rounded-full p-3 shadow-sm`}>
+              <Text className="text-center text-white text-lg font-bold">
+                Add Trip
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </ScreenWrapper>

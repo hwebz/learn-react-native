@@ -12,6 +12,11 @@ import {colors} from '../theme';
 import BackButton from '../components/backButton';
 import {getImage} from '../assets/images/randomImage';
 import {useNavigation} from '@react-navigation/native';
+import {createUserWithEmailAndPassword} from 'firebase/auth';
+import {auth} from '../config/firebase';
+import Snackbar from 'react-native-snackbar';
+import { setUserLoading } from '../redux/slices/user';
+import { useDispatch } from 'react-redux';
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
@@ -21,11 +26,37 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
 
-  const handleSignIn = () => {
+  const dispatch = useDispatch();
+
+  const handleSignIn = async () => {
     if (email && password && password === confirmPassword && fullName) {
-      navigation.goBack();
-      navigation.navigate('Home' as never);
+      // navigation.goBack();
+      // navigation.navigate('Home' as never);
+      try {
+        try {
+          dispatch(setUserLoading(true));
+          await await createUserWithEmailAndPassword(auth, email, password);
+        } catch (error: any) {
+          console.log('error', error);
+          Snackbar.show({
+            text: 'Please provide valid email/password!',
+            backgroundColor: 'red',
+          });
+        } finally {
+          dispatch(setUserLoading(false));
+        }
+      } catch (error: any) {
+        console.log('error', error);
+        Snackbar.show({
+          text: "Can't sign up with provided email/password!",
+          backgroundColor: 'red',
+        });
+      }
     } else {
+      Snackbar.show({
+        text: 'Please provide all required information!',
+        backgroundColor: 'red',
+      });
     }
   };
 
@@ -62,6 +93,7 @@ const SignUpScreen = () => {
               placeholder="Enter your email"
               onChangeText={value => setEmail(value)}
               className="p-4 bg-white rounded-full mb-3"
+              autoCapitalize="none"
             />
             <Text className={`${colors.heading} text-lg font-bold mb-2`}>
               Password
@@ -71,6 +103,7 @@ const SignUpScreen = () => {
               placeholder="Enter your password"
               onChangeText={value => setPassword(value)}
               className="p-4 bg-white rounded-full mb-3"
+              autoCapitalize="none"
             />
             <Text className={`${colors.heading} text-lg font-bold mb-2`}>
               Confirm Your Password
@@ -80,6 +113,7 @@ const SignUpScreen = () => {
               placeholder="Confirm your password"
               onChangeText={value => setConfirmPassword(value)}
               className="p-4 bg-white rounded-full mb-3"
+              autoCapitalize="none"
             />
           </View>
         </ScrollView>

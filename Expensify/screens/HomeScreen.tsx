@@ -1,57 +1,93 @@
 import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import ScreenWrapper from '../components/screenWrapper';
 import {colors} from '../theme';
 import banner from '../assets/images/banner.png';
 import randomImage from '../assets/images/randomImage';
 import EmptyList from '../components/emptyList';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {signOut} from 'firebase/auth';
+import {auth, tripsRef} from '../config/firebase';
+import {useSelector} from 'react-redux';
+import {getDocs, query, where} from 'firebase/firestore';
 
-const items = [
-  {
-    id: 1,
-    place: 'Gujrat',
-    country: 'Pakistan',
-  },
-  {
-    id: 2,
-    place: 'London Eye',
-    country: 'England',
-  },
-  {
-    id: 3,
-    place: 'Washington dc',
-    country: 'America',
-  },
-  {
-    id: 4,
-    place: 'New york',
-    country: 'America',
-  },
-  {
-    id: 5,
-    place: 'Gujrat',
-    country: 'Pakistan',
-  },
-  {
-    id: 6,
-    place: 'London Eye',
-    country: 'England',
-  },
-  {
-    id: 7,
-    place: 'Washington dc',
-    country: 'America',
-  },
-  {
-    id: 8,
-    place: 'New york',
-    country: 'America',
-  },
-];
+// const trips = [
+//   {
+//     id: 1,
+//     place: 'Gujrat',
+//     country: 'Pakistan',
+//   },
+//   {
+//     id: 2,
+//     place: 'London Eye',
+//     country: 'England',
+//   },
+//   {
+//     id: 3,
+//     place: 'Washington dc',
+//     country: 'America',
+//   },
+//   {
+//     id: 4,
+//     place: 'New york',
+//     country: 'America',
+//   },
+//   {
+//     id: 5,
+//     place: 'Gujrat',
+//     country: 'Pakistan',
+//   },
+//   {
+//     id: 6,
+//     place: 'London Eye',
+//     country: 'England',
+//   },
+//   {
+//     id: 7,
+//     place: 'Washington dc',
+//     country: 'America',
+//   },
+//   {
+//     id: 8,
+//     place: 'New york',
+//     country: 'America',
+//   },
+// ];
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+
+  const [trips, setTrips] = useState<any[]>([]);
+  const {user} = useSelector((state: any) => state.user);
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchTrips();
+    }
+  }, [isFocused]);
+
+  const fetchTrips = async () => {
+    const q = query(tripsRef, where('userId', '==', user.uid));
+    const querySnapshot = await getDocs(q);
+    const data: any[] = [];
+    querySnapshot.forEach(doc => {
+      console.log('doc = ', doc.data());
+      data.push({
+        ...doc.data(),
+        id: doc.id,
+      });
+    });
+
+    setTrips(data);
+  };
+
+  const handleLogOut = async () => {
+    // navigation.navigate('Welcome' as never);
+    await signOut(auth);
+  };
+
   return (
     <ScreenWrapper className="flex-1">
       <View className="flex-row justify-between items-center p-3">
@@ -59,7 +95,7 @@ const HomeScreen = () => {
           Expensify
         </Text>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Welcome' as never)}
+          onPress={handleLogOut}
           className="p-2 px-3 bg-white border border-gray-200 rounded-full">
           <Text className={colors.heading}>Logout</Text>
         </TouchableOpacity>
@@ -78,12 +114,9 @@ const HomeScreen = () => {
             <Text className={colors.heading}>Add Trip</Text>
           </TouchableOpacity>
         </View>
-        <View
-          style={{
-            height: 430,
-          }}>
+        <View>
           <FlatList
-            data={items}
+            data={trips}
             numColumns={2}
             keyExtractor={item => item.id.toString()}
             showsVerticalScrollIndicator={false}
