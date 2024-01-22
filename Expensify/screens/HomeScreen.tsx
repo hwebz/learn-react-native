@@ -1,13 +1,11 @@
 import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
-import React, {Component} from 'react';
+import React from 'react';
 import ScreenWrapper from '../components/screenWrapper';
 import {colors} from '../theme';
 import banner from '../assets/images/banner.png';
 import randomImage from '../assets/images/randomImage';
 import EmptyList from '../components/emptyList';
 import {useNavigation} from '@react-navigation/native';
-import {RootStackParamList} from '../navigation/appNavigation';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 const items = [
   {
@@ -96,7 +94,9 @@ const HomeScreen = () => {
             className="mx-1"
             renderItem={({item}) => {
               return (
-                <TouchableOpacity className="mb-[3%] w-[48.5%]">
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('TripExpenses', {...item})}
+                  className="mb-[3%] w-[48.5%]">
                   <View className="bg-white p-3 rounded-2xl shadow-sm w-full">
                     <Image
                       source={randomImage()}

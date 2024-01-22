@@ -5,7 +5,7 @@ export const colors = {
 export const categoryBG = {
   food: '#E1D3EE',
   commute: '#B0E3D3',
-  shopping: '#EcFAD7',
-  entertainment: '#ffdfdd',
+  shopping: '#ECFAD6',
+  entertainment: '#FFDFDD',
   other: '#CAD309',
 };

@@ -11,7 +11,8 @@ const images = {
     10: require('./10.png'),
     11: require('./11.png'),
     12: require('./12.png'),
-    empty: require(`./empty.png`)
+    empty: require('./empty.png'),
+    expenseBanner: require('./expenseBanner.png')
 }
 
 export default function randomImage(){
