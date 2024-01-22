@@ -121,7 +121,8 @@ const SignUpScreen = () => {
         <View>
           <TouchableOpacity
             onPress={handleSignIn}
-            className={`bg-[${colors.button}] my-6 rounded-full p-3 shadow-sm`}>
+            style={{backgroundColor: colors.button}}
+            className="my-6 rounded-full p-3 shadow-sm">
             <Text className="text-center text-white text-lg font-bold">
               Sign In
             </Text>

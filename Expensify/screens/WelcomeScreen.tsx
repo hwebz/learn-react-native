@@ -20,14 +20,16 @@ const WelcomeScreen = () => {
           </Text>
           <TouchableOpacity
             onPress={() => navigation.navigate('SignIn' as never)}
-            className={`shadow p-3 rounded-full bg-[${colors.button}] mb-5`}>
+            style={{backgroundColor: colors.button}}
+            className="shadow p-3 rounded-full mb-5">
             <Text className="text-center text-white font-bold text-lg font-bold">
               Sign In
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('SignUp' as never)}
-            className={`shadow p-3 rounded-full bg-[${colors.button}]`}>
+            style={{backgroundColor: colors.button}}
+            className="shadow p-3 rounded-full">
             <Text className="text-center text-white font-bold text-lg font-bold">
               Sign Up
             </Text>

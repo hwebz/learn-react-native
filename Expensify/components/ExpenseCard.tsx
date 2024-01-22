@@ -10,7 +10,8 @@ const ExpenseCard = ({expense}: any) => {
   // console.log(categoryBG[expense.category as never]);
   return (
     <View
-      className={`bg-[${selectedCategory?.color}] flex-row justify-between items-center p-3 px-5 mb-3 rounded-2xl`}>
+      style={{backgroundColor: selectedCategory?.color}}
+      className="flex-row justify-between items-center p-3 px-5 mb-3 rounded-2xl">
       <View>
         <Text className={`${colors.heading} font-bold`}>{expense.title}</Text>
         <Text className={`${colors.heading} font-bold`}>

@@ -114,7 +114,8 @@ const AddExpenseScreen = (props: any) => {
           ) : (
             <TouchableOpacity
               onPress={handleAddExpense}
-              className={`bg-[${colors.button}] my-6 rounded-full p-3 shadow-sm`}>
+              style={{backgroundColor: colors.button}}
+              className="my-6 rounded-full p-3 shadow-sm">
               <Text className="text-center text-white text-lg font-bold">
                 Add Expense
               </Text>
