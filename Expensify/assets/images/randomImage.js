@@ -11,6 +11,7 @@ const images = {
     10: require('./10.png'),
     11: require('./11.png'),
     12: require('./12.png'),
+    empty: require(`./empty.png`)
 }
 
 export default function randomImage(){
@@ -18,4 +19,8 @@ export default function randomImage(){
     let max = 12;
     let random = Math.floor(Math.random()*(max-min + 1)) + min;
     return images[random];
+}
+
+export function getImage(name) {
+    return images[name]
 }
