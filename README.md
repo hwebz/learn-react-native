@@ -48,3 +48,13 @@ Video tutorial: [Code with Nomi](https://www.youtube.com/watch?v=MuiMghr_YZc&lis
     <img src="./screenshots/expense-app-5.png" width="200" />
     <img src="./screenshots/expense-app-6.png" width="200" />
 </div>
+
+### App Store UI
+Video tutorial: [Code with Nomi](https://www.youtube.com/watch?v=MuiMghr_YZc&list=PLKWMD009Q4qTGuqXxRq51f8OoDaIoJ1yo)
+
+> /AppStoreUI
+
+#### Screenshots
+<div class="flex">
+    <img src="./screenshots/app-store-ui.png" width="200" />
+</div>
