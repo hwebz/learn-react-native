@@ -58,3 +58,15 @@ Video tutorial: [Code with Nomi](https://www.youtube.com/watch?v=MuiMghr_YZc&lis
 <div class="flex">
     <img src="./screenshots/app-store-ui.png" width="200" />
 </div>
+
+### Login SignUp UI
+Video tutorial: [Code with Nomi](https://www.youtube.com/watch?v=MuiMghr_YZc&list=PLKWMD009Q4qTGuqXxRq51f8OoDaIoJ1yo)
+
+> /LoginSignUpUI
+
+#### Screenshots
+<div class="flex">
+    <img src="./screenshots/login-signup-ui.png" width="200" />
+    <img src="./screenshots/login-signup-ui-1.png" width="200" />
+    <img src="./screenshots/login-signup-ui-2.png" width="200" />
+</div>
