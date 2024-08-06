@@ -4,17 +4,18 @@ import { categories } from '@/constants/data'
 import { hp, wp } from '@/helpers/common'
 import { theme } from '@/constants/theme'
 import Animated, { FadeInRight } from 'react-native-reanimated'
+import { Category } from '@/api'
 
 interface CategoriesProps {
-  activeCategory: string
-  handleChangeCategory: (category: string) => void
+  activeCategory: Category
+  handleChangeCategory: (category: Category) => void
 }
 
 interface CategoryItem {
   isActive: boolean
   title: string
   index: number
-  onClick: (category: string) => void
+  onClick: (category: Category) => void
 }
 
 const Categories = ({
@@ -48,7 +49,7 @@ const CategoryItem = ({ isActive, title, index, onClick }: CategoryItem) => {
   const backgroundColor = isActive ? theme.colors.neutral(0.8) : theme.colors.white
   return (
     <Animated.View entering={FadeInRight.delay(index * 200)}>
-      <Pressable style={[styles.category, {backgroundColor}]} onPress={() => onClick(title)}>
+      <Pressable style={[styles.category, {backgroundColor}]} onPress={() => onClick(title as Category)}>
           <Text style={[styles.title, {color}]}>{title}</Text>
       </Pressable>
     </Animated.View>

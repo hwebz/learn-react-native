@@ -1,16 +1,31 @@
 import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Feather, FontAwesome6, Ionicons } from '@expo/vector-icons'
 import { theme } from '@/constants/theme'
 import { hp, wp } from '@/helpers/common'
 import Categories from '@/components/categories'
+import { Category, PixabayRequest, apiCall } from '@/api'
 
 const Home = () => {
   const { top } = useSafeAreaInsets()
   const paddingTop = top > 0 ? top + 10 : 30
   const [search, setSearch] = useState<string>('')
-  const [activeCategory, setActiveCategory] = useState<string>('backgrounds')
+  const [activeCategory, setActiveCategory] = useState<Category>(Category.Backgrounds)
+
+  useEffect(() => {
+    fetchPixabayImages()
+  }, [])
+
+  const fetchPixabayImages = async () => {
+    const params: PixabayRequest = {
+      page: 1,
+      per_page: 25,
+      category: activeCategory
+    }
+    const response = await apiCall(params)
+    console.log(response)
+  }
 
   return (
     <View style={[styles.container, {paddingTop}]}>
@@ -55,7 +70,7 @@ const Home = () => {
         <View style={styles.categories}>
           <Categories
             activeCategory={activeCategory}
-            handleChangeCategory={(category: string) => setActiveCategory(category)}
+            handleChangeCategory={(category: Category) => setActiveCategory(category)}
           />
         </View>
       </ScrollView>

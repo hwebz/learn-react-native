@@ -31,6 +31,10 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "apiKey": "",
+      "apiUrl": ""
     }
   }
 }
