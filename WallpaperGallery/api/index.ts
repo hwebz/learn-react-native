@@ -37,6 +37,7 @@ enum Orientation {
 }
 
 export enum Category {
+  All = "all",
   Backgrounds = "backgrounds",
   Fashion = "fashion",
   Nature = "nature",

@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Feather, FontAwesome6, Ionicons } from '@expo/vector-icons'
 import { theme } from '@/constants/theme'
@@ -7,29 +7,62 @@ import { hp, wp } from '@/helpers/common'
 import Categories from '@/components/categories'
 import { Category, PixabayImage, PixabayRequest, apiCall } from '@/api'
 import ImageGrid from '@/components/images'
+import { debounce } from 'lodash'
 
 const Home = () => {
   const { top } = useSafeAreaInsets()
+  const searchInputRef = useRef<TextInput>(null)
   const paddingTop = top > 0 ? top + 10 : 30
   const [search, setSearch] = useState<string>('')
-  const [activeCategory, setActiveCategory] = useState<Category>(Category.Backgrounds)
+  const [activeCategory, setActiveCategory] = useState<Category>(Category.All)
   const [images, setImages] = useState<PixabayImage[]>([])
 
   useEffect(() => {
     fetchPixabayImages()
   }, [])
 
-  const fetchPixabayImages = async () => {
+  const fetchPixabayImages = async ({
+    query,
+    category
+  }: any = {}) => {
     const params: PixabayRequest = {
       page: 1,
-      per_page: 25,
-      category: activeCategory
+      per_page: 25
+    }
+    if (query?.length > 2) {
+      params.q = query
+    }
+    if (category && category !== Category.All) {
+      params.category = category
     }
     const response = await apiCall(params)
     
     if (response.success) {
       setImages(response.data?.hits || [])
     }
+  }
+
+  const handleSearch = async (text: string = '') => {
+    console.log('Searching for: ', text)
+    setSearch(text)
+    setImages([])
+
+    await fetchPixabayImages({ query: text })
+  }
+
+  const handleSearchDebounce = useCallback(debounce(handleSearch, 500), [])
+
+  const clearSearch = () => {
+    searchInputRef?.current?.clear()
+    handleSearch()
+  }
+  
+  const handleChangeCategory = async (category: Category) => {
+    setActiveCategory(category)
+    clearSearch()
+    setImages([])
+
+    await fetchPixabayImages({ category: category === Category.All ? '' : category })
   }
 
   return (
@@ -59,13 +92,13 @@ const Home = () => {
             <Feather name="search" size={24} color={theme.colors.neutral(0.4)} />
           </View>
           <TextInput
+            ref={searchInputRef}
             placeholder='Search for photos...'
             style={styles.searchInput}
-            onChangeText={(value: string) => setSearch(value)}
-            value={search}
+            onChangeText={handleSearchDebounce}
           />
           {!!search && (
-            <Pressable style={styles.closeIcon}>
+            <Pressable style={styles.closeIcon} onPress={clearSearch}>
               <Ionicons name="close" size={24} color={theme.colors.neutral(0.6)} />
             </Pressable>
           )}
@@ -75,7 +108,7 @@ const Home = () => {
         <View style={styles.categories}>
           <Categories
             activeCategory={activeCategory}
-            handleChangeCategory={(category: Category) => setActiveCategory(category)}
+            handleChangeCategory={handleChangeCategory}
           />
         </View>
 
