@@ -5,13 +5,15 @@ import { Feather, FontAwesome6, Ionicons } from '@expo/vector-icons'
 import { theme } from '@/constants/theme'
 import { hp, wp } from '@/helpers/common'
 import Categories from '@/components/categories'
-import { Category, PixabayRequest, apiCall } from '@/api'
+import { Category, PixabayImage, PixabayRequest, apiCall } from '@/api'
+import ImageGrid from '@/components/images'
 
 const Home = () => {
   const { top } = useSafeAreaInsets()
   const paddingTop = top > 0 ? top + 10 : 30
   const [search, setSearch] = useState<string>('')
   const [activeCategory, setActiveCategory] = useState<Category>(Category.Backgrounds)
+  const [images, setImages] = useState<PixabayImage[]>([])
 
   useEffect(() => {
     fetchPixabayImages()
@@ -24,7 +26,10 @@ const Home = () => {
       category: activeCategory
     }
     const response = await apiCall(params)
-    console.log(response)
+    
+    if (response.success) {
+      setImages(response.data?.hits || [])
+    }
   }
 
   return (
@@ -72,6 +77,17 @@ const Home = () => {
             activeCategory={activeCategory}
             handleChangeCategory={(category: Category) => setActiveCategory(category)}
           />
+        </View>
+
+        {/* Image Mansory Grid */}
+        <View>
+          {
+            images.length > 0 ? (
+              <ImageGrid images={images} />
+            ) : (
+              <Text>No image found.</Text>
+            )
+          }
         </View>
       </ScrollView>
     </View>
