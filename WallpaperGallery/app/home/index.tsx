@@ -10,6 +10,7 @@ const Home = () => {
   const { top } = useSafeAreaInsets()
   const paddingTop = top > 0 ? top + 10 : 30
   const [search, setSearch] = useState<string>('')
+  const [activeCategory, setActiveCategory] = useState<string>('backgrounds')
 
   return (
     <View style={[styles.container, {paddingTop}]}>
@@ -52,7 +53,10 @@ const Home = () => {
 
         {/* Categories */}
         <View style={styles.categories}>
-          <Categories />
+          <Categories
+            activeCategory={activeCategory}
+            handleChangeCategory={(category: string) => setActiveCategory(category)}
+          />
         </View>
       </ScrollView>
     </View>
