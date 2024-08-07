@@ -115,14 +115,13 @@ const Home = () => {
         {/* Image Mansory Grid */}
         <View>
           {
-            images.length > 0 ? (
+            images.length > 0 && (
               <ImageGrid images={images} />
-            ) : (
-              <Text>No image found.</Text>
             )
           }
         </View>
       </ScrollView>
+
     </View>
   )
 }

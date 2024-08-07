@@ -9,8 +9,9 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    ```bash
    npm install
    ```
+2. Make `app.json` file based on `app.example.json` and enter `apiKey`
 
-2. Start the app
+3. Start the app
 
    ```bash
     npx expo start

@@ -1,8 +1,8 @@
 import axios from 'axios'
 import Constants from 'expo-constants'
 
-const API_KEY = process.env.API_KEY || Constants.expoConfig?.extra?.apiKey
-const API_URL = process.env.API_URL || Constants.expoConfig?.extra?.apiUrl
+const API_KEY = Constants.expoConfig?.extra?.apiKey
+const API_URL = Constants.expoConfig?.extra?.apiUrl
 
 enum Language {
   CS = "cs",
@@ -145,6 +145,7 @@ export interface APIResponse {
 }
 
 function buildRequestURL(params: QueryParams): string {
+
   const urlParams = new URLSearchParams();
 
   params.key = API_KEY
