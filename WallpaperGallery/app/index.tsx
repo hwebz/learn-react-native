@@ -39,7 +39,7 @@ export default function WelcomeScreen() {
             Every Pixel Tells a Story
           </Animated.Text>
           <Animated.View entering={FadeInDown.delay(600).springify()}>
-            <Pressable style={styles.startButton} onPress={() => router.push('home')}>
+            <Pressable style={styles.startButton} onPress={() => router.push('home' as any)}>
               <Text style={styles.startText}>Start Explore</Text>
             </Pressable>
           </Animated.View>

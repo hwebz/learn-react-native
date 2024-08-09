@@ -104,30 +104,31 @@ export interface PixabayRequest extends QueryParams {
   order?: Order
   callback?: string
   pretty?: boolean
+  append?: boolean
 }
 
-export interface PixabayImage {
-  id: number
+export interface PixabayImage extends QueryParams {
+  id: string
   pageURL: string
   type: string
   tags: string
   previewURL: string
-  previewWidth: number
-  previewHeight: number
+  previewWidth: string
+  previewHeight: string
   webformatURL: string
-  webformatWidth: number
-  webformatHeight: number
+  webformatWidth: string
+  webformatHeight: string
   largeImageURL: string
   fullHDURL: string
   imageURL: string
-  imageWidth: number
-  imageHeight: number
-  imageSize: number
-  views: number
-  downloads: number
-  likes: number
-  comments: number
-  user_id: number
+  imageWidth: string
+  imageHeight: string
+  imageSize: string
+  views: string
+  downloads: string
+  likes: string
+  comments: string
+  user_id: string
   user: string
   userImageURL: string
 }

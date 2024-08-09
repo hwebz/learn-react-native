@@ -5,6 +5,7 @@ import { PixabayImage } from '@/api'
 import { getColumnCount, getImageSize, wp } from '@/helpers/common'
 import { Image } from 'expo-image'
 import { theme } from '@/constants/theme'
+import { useRouter } from 'expo-router'
 
 interface ImageGridProps {
   images: PixabayImage[]
@@ -40,6 +41,7 @@ const ImageGrid = ({
 }
 
 const ImageCard = ({ image, isLastItemInRow, index }: ImageCardProps ) => {
+  const router = useRouter()
   const getImageHeight = () => {
     const {
       imageHeight: height,
@@ -51,7 +53,10 @@ const ImageCard = ({ image, isLastItemInRow, index }: ImageCardProps ) => {
     }
   }
   return (
-    <Pressable style={[styles.imageWrapper, !isLastItemInRow && styles.spacing]}>
+    <Pressable
+      onPress={() => router.push({ pathname: 'home/image' as any, params: { ...image } })}
+      style={[styles.imageWrapper, !isLastItemInRow && styles.spacing]}
+    >
       <Image
         style={[styles.image, getImageHeight()]}
         source={image?.webformatURL}
