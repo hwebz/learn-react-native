@@ -2,7 +2,7 @@ import { Text, StyleSheet, View, Pressable } from 'react-native'
 import React, { useMemo } from 'react'
 import { BottomSheetBackdropProps, BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet'
 import { BlurView } from 'expo-blur'
-import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated'
+import Animated, { Extrapolation, FadeInDown, FadeInUp, interpolate, useAnimatedStyle } from 'react-native-reanimated'
 import { filters as predefinedFilters } from '@/constants/data'
 import { hp, wp } from '@/helpers/common'
 import { theme } from '@/constants/theme'
@@ -35,11 +35,14 @@ const Filters = ({
       <BottomSheetView style={styles.contentContainer}>
         <View style={styles.content}>
           <Text style={styles.filterText}>Filters</Text>
-          <View style={styles.filterTypes}>
-            {Object.keys(sections).map((sectionName) => {
-              const Section = sections[sectionName as keyof typeof sections]
-              const section = predefinedFilters.find((filter) => filter.key === sectionName)
-              return (
+          {Object.keys(sections).map((sectionName: string, index: number) => {
+            const Section = sections[sectionName as keyof typeof sections]
+            const section = predefinedFilters.find((filter) => filter.key === sectionName)
+            return (
+              <Animated.View
+                key={sectionName}
+                entering={FadeInDown.delay((index * 100) + 100).springify().damping(11)}
+              >
                 <SectionView
                   title={section?.title ?? ''}
                   content={Section({
@@ -49,12 +52,15 @@ const Filters = ({
                     filterName: sectionName
                   })}
                 />
-              )
-            })}
-          </View>
+              </Animated.View>
+            )
+          })}
 
           {/* Buttons */}
-          <View style={styles.buttonsWrapper}>
+          <Animated.View
+            style={styles.buttonsWrapper}
+            entering={FadeInDown.delay(500).springify().damping(11)}
+          >
             <Pressable
               onPress={onReset}
               style={[styles.button, styles.resetButton]}
@@ -67,7 +73,7 @@ const Filters = ({
             >
               <Text style={[styles.buttonText, { color: theme.colors.white }]}>Apply</Text>
             </Pressable>
-          </View>
+          </Animated.View>
         </View>
       </BottomSheetView>
     </BottomSheetModal>
@@ -124,13 +130,11 @@ const styles = StyleSheet.create({
     fontWeight: `${theme.fontWeights.semibold}` as any,
     marginBottom: 5
   },
-  filterTypes: {
-    flex: 1
-  },
   buttonsWrapper: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     gap: 10,
+    flex: 1,
   },
   button: {
     flex: 1,

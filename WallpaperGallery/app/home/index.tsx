@@ -184,7 +184,13 @@ const Home = () => {
                 const filterValue = filters[item]
                 return (
                   <View key={item} style={styles.filterItem}>
-                    <Text style={styles.filterItemText}>{selectedFilter?.title ?? item}: {filterValue}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 1 }}>
+                      <Text style={styles.filterItemText}>{selectedFilter?.title ?? item}: </Text>
+                      {item === 'colors' ?
+                        <View style={[styles.colorFilter, { backgroundColor: filterValue }]} /> :
+                        <Text style={styles.filterItemText}>{filterValue}</Text>
+                      }
+                    </View>
                     <Pressable onPress={() => clearFilter(item)} style={styles.filterCloseIcon}>
                       <Ionicons name="close" size={14} color={theme.colors.neutral(0.9)} />
                     </Pressable>
@@ -286,6 +292,12 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.neutral(0.2),
     padding: 4,
     borderRadius: theme.radius.sm
+  },
+  colorFilter: {
+    height: 20,
+    width: 30,
+    borderRadius: 5,
+    borderCurve: 'continuous'
   }
 })
 
