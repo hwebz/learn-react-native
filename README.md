@@ -70,3 +70,19 @@ Video tutorial: [Code with Nomi](https://www.youtube.com/watch?v=MuiMghr_YZc&lis
     <img src="./screenshots/login-signup-ui-1.png" width="200" />
     <img src="./screenshots/login-signup-ui-2.png" width="200" />
 </div>
+
+### Wallpaper App
+Video tutorial: [Code with Nomi](https://www.youtube.com/watch?v=Feqq9e04svw)
+
+> /WallpaperGallery
+
+#### Screenshots
+<div class="flex">
+    <img src="./screenshots/wallpaper-1.png" width="200" />
+    <img src="./screenshots/wallpaper-2.png" width="200" />
+    <img src="./screenshots/wallpaper-3.png" width="200" />
+    <img src="./screenshots/wallpaper-4.png" width="200" />
+    <img src="./screenshots/wallpaper-5.png" width="200" />
+    <img src="./screenshots/wallpaper-6.png" width="200" />
+    <img src="./screenshots/wallpaper-7.png" width="200" />
+</div>
