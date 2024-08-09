@@ -38,9 +38,7 @@ const Categories = ({
           title={item}
         />
       )}
-    >
-
-    </FlatList>
+    />
   )
 }
 

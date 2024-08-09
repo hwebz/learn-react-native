@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, ScrollView, TextInput } from 'react-native'
+import { View, Text, StyleSheet, Pressable, ScrollView, TextInput, ActivityIndicator, FlatList } from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Feather, FontAwesome6, Ionicons } from '@expo/vector-icons'
@@ -10,6 +10,7 @@ import ImageGrid from '@/components/images'
 import { debounce } from 'lodash'
 import Filters from '@/components/filters'
 import { BottomSheetModal } from '@gorhom/bottom-sheet'
+import { filters as predefinedFilters } from '@/constants/data'
 
 const Home = () => {
   const { top } = useSafeAreaInsets()
@@ -42,6 +43,7 @@ const Home = () => {
     if (category && category !== Category.All) {
       params.category = category
     }
+    setImages([])
     const response = await apiCall(params)
     
     if (response.success) {
@@ -68,7 +70,7 @@ const Home = () => {
     setActiveCategory(category)
     clearSearch()
     setImages([])
-    const params = {
+    const params: PixabayRequest = {
       ...filters,
       page: 1,
       category: category === Category.All ? '' : category
@@ -84,21 +86,40 @@ const Home = () => {
     modalRef.current?.close()
   }, [])
 
-  const applyFilters = () => {
-    const params = {
+  const applyFilters = async () => {
+    const params: PixabayRequest = {
       page: 1,
       ...filters
     }
     if (activeCategory) params.category = activeCategory
     if (search) params.query = search
       
-    fetchPixabayImages(params)
     closeFilters()
+    await fetchPixabayImages(params)
   }
 
   const resetFilters = () => {
     setFilters({})
     closeFilters()
+    clearSearch()
+    setActiveCategory(Category.All)
+
+    applyFilters()
+  }
+
+  const clearFilter = (key: string) => {
+    const newFilters = { ...filters }
+    delete newFilters[key]
+    setFilters(newFilters)
+
+    const params: PixabayRequest = {
+      page: 1,
+      ...newFilters
+    }
+    if (activeCategory) params.category = activeCategory
+    if (search) params.query = search
+      
+    fetchPixabayImages(params)
   }
 
   return (
@@ -141,12 +162,38 @@ const Home = () => {
         </View>
 
         {/* Categories */}
-        <View style={styles.categories}>
+        <View>
           <Categories
             activeCategory={activeCategory}
             handleChangeCategory={handleChangeCategory}
           />
         </View>
+
+        {/* Applied Filters */}
+        {Object.keys(filters).length > 0 && (
+          <View style={styles.filters}>
+            <Text>Filters:</Text>
+            <FlatList
+              horizontal
+              contentContainerStyle={styles.filters}
+              showsHorizontalScrollIndicator={false}
+              data={Object.keys(filters)}
+              keyExtractor={item => item}
+              renderItem={({ item, index }: any) => {
+                const selectedFilter = predefinedFilters.find(f => f.key === item)
+                const filterValue = filters[item]
+                return (
+                  <View key={item} style={styles.filterItem}>
+                    <Text style={styles.filterItemText}>{selectedFilter?.title ?? item}: {filterValue}</Text>
+                    <Pressable onPress={() => clearFilter(item)} style={styles.filterCloseIcon}>
+                      <Ionicons name="close" size={14} color={theme.colors.neutral(0.9)} />
+                    </Pressable>
+                  </View>
+                )
+              }}
+            />
+          </View>
+        )}
 
         {/* Image Mansory Grid */}
         <View>
@@ -156,6 +203,12 @@ const Home = () => {
             )
           }
         </View>
+
+        {/* Loading */}
+        <View style={{ marginBottom: 70, marginTop: 20 }}>
+          <ActivityIndicator size="large" />
+        </View>
+
       </ScrollView>
 
       {/* Filters */}
@@ -210,7 +263,30 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: theme.radius.sm
   },
-  categories: {}
+  filters: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: wp(4),
+    gap: 10
+  },
+  filterItem: {
+    backgroundColor: theme.colors.neutral(0.1),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: theme.radius.sm,
+    padding: 8,
+    gap: 10,
+    paddingHorizontal: 10
+  },
+  filterItemText: {
+    fontSize: hp(1.9)
+  },
+  filterCloseIcon: {
+    backgroundColor: theme.colors.neutral(0.2),
+    padding: 4,
+    borderRadius: theme.radius.sm
+  }
 })
 
 export default Home
