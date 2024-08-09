@@ -8,6 +8,8 @@ import Categories from '@/components/categories'
 import { Category, PixabayImage, PixabayRequest, apiCall } from '@/api'
 import ImageGrid from '@/components/images'
 import { debounce } from 'lodash'
+import Filters from '@/components/filters'
+import { BottomSheetModal } from '@gorhom/bottom-sheet'
 
 const Home = () => {
   const { top } = useSafeAreaInsets()
@@ -16,6 +18,9 @@ const Home = () => {
   const [search, setSearch] = useState<string>('')
   const [activeCategory, setActiveCategory] = useState<Category>(Category.All)
   const [images, setImages] = useState<PixabayImage[]>([])
+  const [filters, setFilters] = useState<any>({})
+
+  const modalRef = useRef<BottomSheetModal>(null)
 
   useEffect(() => {
     fetchPixabayImages()
@@ -23,11 +28,13 @@ const Home = () => {
 
   const fetchPixabayImages = async ({
     query,
-    category
+    category,
+    ...rest
   }: any = {}) => {
     const params: PixabayRequest = {
       page: 1,
-      per_page: 25
+      per_page: 25,
+      ...rest
     }
     if (query?.length > 2) {
       params.q = query
@@ -62,7 +69,32 @@ const Home = () => {
     clearSearch()
     setImages([])
 
-    await fetchPixabayImages({ category: category === Category.All ? '' : category })
+    await fetchPixabayImages({ category: category === Category.All ? '' : category, ...filters })
+  }
+
+  const openFilters = useCallback(() => {
+    modalRef.current?.present()
+  }, [])
+
+  const closeFilters = useCallback(() => {
+    modalRef.current?.close()
+  }, [])
+
+  const applyFilters = () => {
+    const params = {
+      page: 1,
+      ...filters
+    }
+    if (activeCategory) params.category = activeCategory
+    if (search) params.query = search
+      
+    fetchPixabayImages(params)
+    closeFilters()
+  }
+
+  const resetFilters = () => {
+    setFilters({})
+    closeFilters()
   }
 
   return (
@@ -74,7 +106,7 @@ const Home = () => {
             Pixels
           </Text>
         </Pressable>
-        <Pressable>
+        <Pressable onPress={openFilters}>
           <FontAwesome6
             name="bars-staggered"
             size={22}
@@ -122,6 +154,14 @@ const Home = () => {
         </View>
       </ScrollView>
 
+      {/* Filters */}
+      <Filters
+        modalRef={modalRef}
+        filters={filters}
+        setFilters={setFilters}
+        onApply={applyFilters}
+        onReset={resetFilters}
+      />
     </View>
   )
 }
