@@ -18,6 +18,8 @@ const ImageScreen = () => {
   const uri = item?.webformatURL
   const fileName = (typeof item?.previewURL === 'string' ? item?.previewURL : '')?.split('/').pop()
   const [status, setStatus] = useState('loading')
+  const imageUrl = item?.webformatURL as string
+  const filePath = `${FileSystem.documentDirectory}${fileName}`
 
   const toastConfig = {
     success: ({ text1, props, ...rest }: any) => {
@@ -58,13 +60,21 @@ const ImageScreen = () => {
 
   const handleDownloadImage = async () => {
     setStatus('downloading')
+    if (Platform.OS === 'web') {
+      const anchor = document.createElement('a')
+      anchor.href = imageUrl
+      anchor.target = '_blank'
+      anchor.download = fileName || 'download'
+      document.body.appendChild(anchor)
+      anchor.click()
+      document.body.removeChild(anchor) 
+    }
     let uri = await downloadFile()
     if (uri) {
       console.log("Image downloaded: ", uri)
       showToast({ message: 'Image downloaded successfully' })
       // Alert.alert('Success', 'Image downloaded successfully')
     }
-    await downloadFile()
   }
 
   const handleShareImage = async () => {
@@ -79,8 +89,6 @@ const ImageScreen = () => {
 
   const downloadFile = async () => {
     try {
-      const imageUrl = item?.webformatURL as string
-      const filePath = `${FileSystem.documentDirectory}${fileName}`
       const response = await FileSystem.downloadAsync(imageUrl, filePath)
 
       return response?.uri ?? null

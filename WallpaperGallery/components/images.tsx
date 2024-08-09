@@ -49,12 +49,12 @@ const ImageCard = ({ image, isLastItemInRow, index }: ImageCardProps ) => {
     } = image
 
     return {
-      height: getImageSize(width, height)
+      height: getImageSize(parseInt(width, 10), parseInt(height, 10))
     }
   }
   return (
     <Pressable
-      onPress={() => router.push({ pathname: 'home/image' as any, params: { ...image } })}
+      onPress={() => router.push({ pathname: 'home/image' as any, params: { ...image } as any })}
       style={[styles.imageWrapper, !isLastItemInRow && styles.spacing]}
     >
       <Image
