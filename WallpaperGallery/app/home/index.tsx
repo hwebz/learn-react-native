@@ -20,34 +20,47 @@ const Home = () => {
   const [activeCategory, setActiveCategory] = useState<Category>(Category.All)
   const [images, setImages] = useState<PixabayImage[]>([])
   const [filters, setFilters] = useState<any>({})
+  const [selectedPage, setSelectedPage] = useState<number>(1)
 
   const modalRef = useRef<BottomSheetModal>(null)
+  const scrollRef = useRef<any>(null)
+  const [isEndReached, setIsEndReached] = useState(false)
 
   useEffect(() => {
     fetchPixabayImages()
   }, [])
 
   const fetchPixabayImages = async ({
+    append = true,
     query,
     category,
+    page = 1,
     ...rest
   }: any = {}) => {
+    setSelectedPage(page)
     const params: PixabayRequest = {
-      page: 1,
+      page,
       per_page: 25,
       ...rest
     }
+
     if (query?.length > 2) {
       params.q = query
     }
     if (category && category !== Category.All) {
       params.category = category
     }
-    setImages([])
+    if (!append) {
+      setImages([])
+    }
     const response = await apiCall(params)
     
     if (response.success) {
-      setImages(response.data?.hits || [])
+      if (append) {
+        setImages(prevState => [...prevState, ...(response.data?.hits || [])])
+      } else {
+        setImages(response.data?.hits || [])
+      }
     }
   }
 
@@ -56,7 +69,11 @@ const Home = () => {
     setSearch(text)
     setImages([])
 
-    await fetchPixabayImages({ query: text })
+    await fetchPixabayImages({
+      query: text,
+      page: 1,
+      append: false
+    })
   }
 
   const handleSearchDebounce = useCallback(debounce(handleSearch, 500), [])
@@ -73,7 +90,8 @@ const Home = () => {
     const params: PixabayRequest = {
       ...filters,
       page: 1,
-      category: category === Category.All ? '' : category
+      category: category === Category.All ? '' : category,
+      append: false
     }
     await fetchPixabayImages(params)
   }
@@ -89,7 +107,8 @@ const Home = () => {
   const applyFilters = async () => {
     const params: PixabayRequest = {
       page: 1,
-      ...filters
+      ...filters,
+      append: false,
     }
     if (activeCategory) params.category = activeCategory
     if (search) params.query = search
@@ -114,7 +133,8 @@ const Home = () => {
 
     const params: PixabayRequest = {
       page: 1,
-      ...newFilters
+      ...newFilters,
+      append: false
     }
     if (activeCategory) params.category = activeCategory
     if (search) params.query = search
@@ -122,11 +142,39 @@ const Home = () => {
     fetchPixabayImages(params)
   }
 
+  const handleScrollUp = () => {
+    scrollRef?.current?.scrollTo({
+      y: 0,
+      animated: true
+    })
+  }
+
+  const handleScroll = ({ nativeEvent }: any) => {
+    const { layoutMeasurement, contentOffset, contentSize } = nativeEvent
+    const contentHeight = contentSize.height
+    const scrollViewHeight = layoutMeasurement.height
+    const scrollOffset = contentOffset.y
+    const bottomPosition = contentHeight - (scrollViewHeight + scrollOffset)
+    if (bottomPosition <= 0 && !isEndReached) {
+      setIsEndReached(true)
+      const params: PixabayRequest = {
+        page: selectedPage + 1,
+        ...filters
+      }
+      if (activeCategory) params.category = activeCategory
+      if (search) params.query = search
+
+      fetchPixabayImages({ ...params, append: true })
+    } else if (bottomPosition > 100 && isEndReached) {
+      setIsEndReached(false)
+    }
+  }
+
   return (
     <View style={[styles.container, {paddingTop}]}>
       {/* Header */}
       <View style={styles.header}>
-        <Pressable>
+        <Pressable onPress={handleScrollUp}>
           <Text style={styles.title}>
             Pixels
           </Text>
@@ -142,6 +190,9 @@ const Home = () => {
 
       <ScrollView
         contentContainerStyle={{ gap: 15 }}
+        scrollEventThrottle={500} // How often scroll event will fire while scrolling (in ms)
+        onScroll={handleScroll}
+        ref={scrollRef}
       >
         {/* Search Bar */}
         <View style={styles.searchBar}>
