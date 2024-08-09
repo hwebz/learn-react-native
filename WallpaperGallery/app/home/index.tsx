@@ -68,8 +68,12 @@ const Home = () => {
     setActiveCategory(category)
     clearSearch()
     setImages([])
-
-    await fetchPixabayImages({ category: category === Category.All ? '' : category, ...filters })
+    const params = {
+      ...filters,
+      page: 1,
+      category: category === Category.All ? '' : category
+    }
+    await fetchPixabayImages(params)
   }
 
   const openFilters = useCallback(() => {
